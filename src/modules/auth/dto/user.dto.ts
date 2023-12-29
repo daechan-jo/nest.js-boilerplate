@@ -9,8 +9,10 @@ import {
   IsDate,
   Length,
 } from 'class-validator';
+import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountHistory, Like, Payment, Post } from '@prisma/client';
+import { Like } from '../../../entities/Like';
+import { Post } from '../../../entities/Post';
 
 export class UserDto {
   @ApiProperty()
@@ -38,6 +40,7 @@ export class UserDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @Exclude()
   password: string;
 
   @ApiProperty()

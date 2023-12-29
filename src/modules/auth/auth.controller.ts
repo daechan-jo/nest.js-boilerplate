@@ -10,14 +10,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
 import { JoinDataDto } from './dto/joinData.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDataDto } from './dto/loginData.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RequestWithUser } from '../user/interface/requestWithUser';
-import { ResponseCreateUserDto } from './dto/responseCreateUser.dto';
+import { RequestWithUser } from '../../interfaces/requestWithUser';
 import { LoggingInterceptor } from '../../interceptors/logging.interceptor';
 import { CreatedUserDto } from './dto/createdUser.dto';
 
@@ -32,12 +30,13 @@ export class AuthController {
     summary: '회원가입',
   })
   @ApiBody({ type: JoinDataDto })
-  @ApiResponse({ status: 201, type: ResponseCreateUserDto })
+  @ApiResponse({ status: 201, type: CreatedUserDto })
   @UsePipes(new ValidationPipe())
   async createUser(@Body() joinData: JoinDataDto): Promise<CreatedUserDto> {
     if (!this.authService.isValidPassword(joinData)) {
       throw new HttpException('Passwords do not match', 400);
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm: passwordConfirm, ...createUserDto } = joinData;
     return await this.authService.createUser(createUserDto);
   }
