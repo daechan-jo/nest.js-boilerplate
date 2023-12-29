@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatedUserDto } from './dto/createdUser.dto';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/loginUser.dto';
-import { UserDto } from './dto/user.dto';
+import { UserDto } from '../user/dto/user.dto';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/User';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,12 +13,19 @@ import { JoinDataDto } from './dto/joinData.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
     private jwtService: JwtService,
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  async getUserByEmail(email: string): Promise<UserDto> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return plainToInstance(UserDto, user);
+  }
 
   isValidPassword(joinDataDto: JoinDataDto): boolean {
     return joinDataDto.password === joinDataDto.passwordConfirm;
@@ -31,17 +37,16 @@ export class AuthService {
     return plainToInstance(CreatedUserDto, createUser);
   }
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user: UserDto = await this.userService.getUserByEmail(email);
+  async validateUser(email: string, password: string): Promise<UserDto> {
+    const user = await this.getUserByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
     return null;
   }
 
   async validatePayload(email: string): Promise<UserDto> {
-    const user: UserDto = await this.userService.getUserByEmail(email);
+    const user = await this.getUserByEmail(email);
     if (user) {
       return user;
     }
