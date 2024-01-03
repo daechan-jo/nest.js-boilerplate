@@ -70,25 +70,6 @@ export class PostController {
     return await this.postService.getPostAndIncrementView(postId);
   }
 
-  @Delete(':postId')
-  @ApiOperation({
-    summary: '게시글 삭제',
-    description: '게시글에 포함된 댓글, 이미지 파일 삭제',
-  })
-  @ApiBody({
-    description: '게시글 삭제',
-  })
-  @ApiResponse({ status: 204, type: PostDto })
-  @UseGuards(AuthGuard('jwt'))
-  async deletePost(
-    @Request() req: RequestWithUser,
-    @Param('postId', ParseIntPipe) postId: number,
-  ): Promise<PostDto> {
-    const userId: number = Number(req.user.id);
-
-    return await this.postService.deletePost(postId, userId);
-  }
-
   @Put(':postId')
   @ApiOperation({
     summary: '단일 게시글 수정',
@@ -104,5 +85,25 @@ export class PostController {
   ): Promise<PostDto> {
     const userId: number = Number(req.user.id);
     return await this.postService.updatePost(userId, postId, updatePostContent);
+  }
+
+  @Delete(':postId')
+  @ApiOperation({
+    summary: '게시글 삭제',
+    description: '게시글에 포함된 댓글, 이미지 파일 삭제',
+  })
+  @ApiBody({
+    description: '게시글 삭제',
+  })
+  @ApiResponse({ status: 204, description: 'Successfully deleted post' })
+  @UseGuards(AuthGuard('jwt'))
+  async deletePost(
+    @Request() req: RequestWithUser,
+    @Param('postId', ParseIntPipe) postId: number,
+  ): Promise<void> {
+    const userId: number = Number(req.user.id);
+
+    await this.postService.deletePost(postId, userId);
+    return;
   }
 }

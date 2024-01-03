@@ -93,5 +93,6 @@ export class UserController {
   async deleteUser(@Request() req: RequestWithUser): Promise<void> {
     const userId: number = Number(req.user.id);
     await this.userService.deleteUser(userId);
+    return;
   }
 }

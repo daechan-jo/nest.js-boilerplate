@@ -10,7 +10,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from '../../entities/Post';
 import { User } from '../../entities/User';
 import { Comment } from '../../entities/Comment';
-import { Like } from '../../entities/Like';
 
 @Module({
   imports: [
@@ -19,7 +18,7 @@ import { Like } from '../../entities/Like';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
     }),
-    TypeOrmModule.forFeature([Post, User, Comment, Like]),
+    TypeOrmModule.forFeature([Post, User, Comment]),
   ],
   controllers: [PostController],
   providers: [PostService, AuthService, JwtStrategy],

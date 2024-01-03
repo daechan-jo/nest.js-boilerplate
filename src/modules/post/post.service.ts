@@ -61,22 +61,12 @@ export class PostService {
     });
 
     const postDto: PostDto = plainToInstance(PostDto, post);
-    postDto.likeCount = post.like.length;
 
     postDto.comments = commentList.map((comment) => ({
       content: comment.content,
       nickname: comment.author.nickname,
     }));
     return postDto;
-  }
-
-  async deletePost(postId: number, userId: number): Promise<PostDto> {
-    const post = await this.postRepository.findOne({ where: { id: postId } });
-    const deletedPost = await this.postRepository.remove(post);
-    if (deletedPost.authorId !== userId) throw new NotFoundException();
-    if (deletedPost.postImg) await deleteRelativeImage(deletedPost);
-
-    return plainToInstance(PostDto, deletedPost);
   }
 
   async updatePost(
@@ -99,5 +89,14 @@ export class PostService {
     const updatedPost: Post = await this.postRepository.save(post);
 
     return plainToInstance(PostDto, updatedPost);
+  }
+
+  async deletePost(postId: number, userId: number): Promise<void> {
+    const post = await this.postRepository.findOne({ where: { id: postId } });
+    const deletedPost = await this.postRepository.remove(post);
+    if (deletedPost.authorId !== userId) throw new NotFoundException();
+    if (deletedPost.postImg) await deleteRelativeImage(deletedPost);
+
+    return;
   }
 }

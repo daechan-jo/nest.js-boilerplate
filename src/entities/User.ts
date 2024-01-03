@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import { Post } from './Post';
 import { Comment } from './Comment';
-import { Like } from './Like';
 
 @Entity('User')
 export class User {
@@ -62,9 +61,6 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.author)
   comment: Comment[];
-
-  @OneToMany(() => Like, (like) => like.user)
-  like: Like[];
 
   @DeleteDateColumn()
   deletedAt: Date;

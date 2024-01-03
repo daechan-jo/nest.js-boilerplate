@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { User } from './User';
 import { Comment } from './Comment';
-import { Like } from './Like';
 
 @Entity('Post')
 @Unique(['id', 'authorId'])
@@ -42,9 +41,6 @@ export class Post {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comment: Comment[];
-
-  @OneToMany(() => Like, (like) => like.post)
-  like: Like[];
 
   @ManyToOne(() => User, (user) => user.post, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'authorId' })
