@@ -11,7 +11,6 @@ import {
 } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Like } from '../../../entities/Like';
 import { Post } from '../../../entities/Post';
 
 export class UserDto {
@@ -74,11 +73,6 @@ export class UserDto {
   @IsArray()
   @ApiProperty()
   post?: Post[];
-
-  @IsOptional()
-  @IsArray()
-  @ApiProperty()
-  like?: Like[];
 
   @IsOptional()
   @IsArray()
