@@ -64,22 +64,11 @@ export class UserListDto {
   @ApiProperty()
   description?: string;
 
-  @IsNotEmpty()
-  @IsBoolean()
-  @ApiProperty()
-  isSponsor!: boolean;
-
   @IsOptional()
   @IsArray()
   @ApiProperty()
   @Exclude()
   subscribe?: [];
-
-  @IsOptional()
-  @IsArray()
-  @ApiProperty()
-  @Exclude()
-  paymentHistory?: [];
 
   @IsOptional()
   @IsArray()
@@ -110,8 +99,4 @@ export class UserListDto {
   @ApiProperty()
   @Exclude()
   updatedAt?: Date;
-
-  @ApiProperty()
-  @Exclude()
-  account: number;
 }

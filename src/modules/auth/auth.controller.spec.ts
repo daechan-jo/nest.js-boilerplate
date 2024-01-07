@@ -23,7 +23,7 @@ describe('AuthController', () => {
           signOptions: { expiresIn: '24h' },
         }),
         TypeOrmModule.forRoot(typeOrmConfig),
-        TypeOrmModule.forFeature([User, Post]),
+        TypeOrmModule.forFeature([User]),
       ],
       controllers: [AuthController],
       providers: [AuthService, LocalStrategy],

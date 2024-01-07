@@ -10,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
   UseInterceptors,
+  Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -28,6 +29,43 @@ import { UserListResponseDto } from './dto/userListResponse.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Get('/my')
+  @ApiOperation({
+    summary: '내 정보 조회',
+  })
+  @ApiResponse({ status: 200, type: UserDto })
+  @UseGuards(AuthGuard('jwt'))
+  async getMyInfo(@Request() req: RequestWithUser): Promise<UserDto> {
+    const userId: number = Number(req.user.id);
+    return await this.userService.findUserById(userId);
+  }
+
+  @Get('/:id')
+  @ApiOperation({
+    summary: '단일 유저 상세 조회',
+    description: 'id와 일치 하는 유저 조회',
+  })
+  @ApiResponse({ status: 200, type: UserDto })
+  @UseGuards(AuthGuard('jwt'))
+  async getUser(
+    @Param('userId', new ParseIntWithDefaultUserPipe()) userId: number,
+  ): Promise<UserDto> {
+    return await this.userService.findUserById(userId);
+  }
+
+  @Get('/all')
+  @ApiOperation({
+    summary: '모든 유저 리스트',
+  })
+  @ApiResponse({ status: 200, type: UserListResponseDto })
+  @UseGuards(AuthGuard('jwt'))
+  async getAllUsers(
+    @Query('page', new ParseIntWithDefaultPipe(1)) page: number,
+    @Query('limit', new ParseIntWithDefaultPipe(10)) limit: number,
+  ): Promise<UserListResponseDto> {
+    return await this.userService.getUsers(page, limit);
+  }
+
   @Put()
   @ApiOperation({
     summary: '회원 정보 수정',
@@ -43,43 +81,6 @@ export class UserController {
   ): Promise<UserDto> {
     const userId = Number(req.user.id);
     return await this.userService.updateUser(userId, updateData);
-  }
-
-  @Get()
-  @ApiOperation({
-    summary: '단일 유저 상세 조회',
-    description: '쿼리로 받은 userId에 해당하는 유저 조회',
-  })
-  @ApiResponse({ status: 200, type: UserDto })
-  @UseGuards(AuthGuard('jwt'))
-  async getUser(
-    @Query('userId', new ParseIntWithDefaultUserPipe()) userId: number,
-  ): Promise<UserDto> {
-    return await this.userService.findUserById(userId);
-  }
-
-  @Get('/my')
-  @ApiOperation({
-    summary: '내 정보 조회',
-  })
-  @ApiResponse({ status: 200, type: UserDto })
-  @UseGuards(AuthGuard('jwt'))
-  async getMyInfo(@Request() req: RequestWithUser): Promise<UserDto> {
-    const userId: number = Number(req.user.id);
-    return await this.userService.findUserById(userId);
-  }
-
-  @Get('/list-all')
-  @ApiOperation({
-    summary: '모든 유저 리스트',
-  })
-  @ApiResponse({ status: 200, type: UserListResponseDto })
-  @UseGuards(AuthGuard('jwt'))
-  async getAllUsers(
-    @Query('page', new ParseIntWithDefaultPipe(1)) page: number,
-    @Query('limit', new ParseIntWithDefaultPipe(10)) limit: number,
-  ): Promise<UserListResponseDto> {
-    return await this.userService.getUsers(page, limit);
   }
 
   @Delete()
