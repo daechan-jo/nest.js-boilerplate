@@ -12,6 +12,7 @@ import {
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Post } from '../../../entities/Post';
+import { Comment } from '../../../entities/Comment';
 
 export class UserDto {
   @ApiProperty()

@@ -27,13 +27,13 @@ export class AuthService {
     return plainToInstance(UserDto, user);
   }
 
-  isValidPassword(joinDataDto: JoinDataDto): boolean {
-    return joinDataDto.password === joinDataDto.passwordConfirm;
+  isValidPassword(joinData: JoinDataDto): boolean {
+    return joinData.password === joinData.passwordConfirm;
   }
 
-  async createUser(createUserDto: CreatedUserDto): Promise<CreatedUserDto> {
-    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
-    const createUser = await this.userRepository.save(createUserDto);
+  async createUser(createUserData: CreatedUserDto): Promise<CreatedUserDto> {
+    createUserData.password = await bcrypt.hash(createUserData.password, 10);
+    const createUser = await this.userRepository.save(createUserData);
     return plainToInstance(CreatedUserDto, createUser);
   }
 

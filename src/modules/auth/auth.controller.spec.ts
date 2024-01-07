@@ -25,8 +25,8 @@ describe('AuthController', () => {
         TypeOrmModule.forRoot(typeOrmConfig),
         TypeOrmModule.forFeature([User, Post]),
       ],
-      controllers: [AuthController, LocalStrategy],
-      providers: [AuthService],
+      controllers: [AuthController],
+      providers: [AuthService, LocalStrategy],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
@@ -40,15 +40,16 @@ describe('AuthController', () => {
         username: 'test',
         password: '1234',
         passwordConfirm: '1234',
-        email: 'test@gmail.com',
+        email: 'test@test.com',
       };
       const createdUser: CreatedUserDto = {
         /* mock 데이터 입력 */
         username: 'test',
         password: '1234',
-        email: 'test@gmail.com',
+        email: 'test@test.com',
       };
 
+      // 해당 메서드가 호출될 대 반환시킬 값을 지정
       jest.spyOn(authService, 'isValidPassword').mockReturnValue(true);
       jest.spyOn(authService, 'createUser').mockResolvedValue(createdUser);
 
@@ -56,6 +57,7 @@ describe('AuthController', () => {
 
       expect(result).toEqual(createdUser);
       expect(authService.isValidPassword).toHaveBeenCalledWith(joinData);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { passwordConfirm, ...expectedCreateUserDto } = joinData;
       expect(authService.createUser).toHaveBeenCalledWith(expectedCreateUserDto);
     });
@@ -66,7 +68,7 @@ describe('AuthController', () => {
         username: 'test',
         password: '1234',
         passwordConfirm: '1234',
-        email: 'test@gmail.com',
+        email: 'test@test.com',
       };
 
       jest.spyOn(authService, 'isValidPassword').mockReturnValue(false);
@@ -77,6 +79,4 @@ describe('AuthController', () => {
       expect(authService.isValidPassword).toHaveBeenCalledWith(joinData);
     });
   });
-
-  // Add more tests for other controller methods (e.g., login) if needed
 });
