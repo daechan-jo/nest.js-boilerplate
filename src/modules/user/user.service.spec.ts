@@ -8,7 +8,6 @@ import { User } from '../../entities/User';
 import { Post } from '../../entities/Post';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-// Mock TypeORM Repositories
 const mockUserRepository = {
   findOne: jest.fn(),
   findAndCount: jest.fn(),

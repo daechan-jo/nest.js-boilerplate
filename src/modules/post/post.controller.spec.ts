@@ -5,7 +5,6 @@ import { PostContentDto } from './dto/postContent.dto';
 import { PostDto } from './dto/post.dto';
 import { RequestWithUser } from '../../interfaces/requestWithUser';
 
-// Mock PostService
 jest.mock('./post.service');
 
 describe('PostController', () => {
@@ -37,7 +36,6 @@ describe('PostController', () => {
         authorId: 0,
         createdAt: undefined,
         id: 0,
-        likeCount: 0,
         postImg: '',
         updatedAt: undefined,
         viewCount: 0,
@@ -54,5 +52,104 @@ describe('PostController', () => {
     });
   });
 
-  // Add similar test cases for other controller methods (getPosts, getPost, updatePost, deletePost)
+  describe('getPosts', () => {
+    it('should get a list of posts', async () => {
+      const mockRequest: RequestWithUser = { user: { id: 1 } } as any;
+      const mockPostsResponse = {
+        posts: [
+          {
+            authorId: 0,
+            createdAt: undefined,
+            id: 0,
+            postImg: '',
+            updatedAt: undefined,
+            viewCount: 0,
+            content: 'test content',
+            title: 'test title',
+          },
+          {
+            authorId: 1,
+            createdAt: undefined,
+            id: 1,
+            postImg: '',
+            updatedAt: undefined,
+            viewCount: 0,
+            content: 'test content',
+            title: 'test title',
+          },
+        ],
+        totalPage: 2,
+        currentPage: 1,
+      };
+
+      jest.spyOn(postService, 'getAllPosts').mockResolvedValue(mockPostsResponse);
+
+      const result = await postController.getPosts(1, 10);
+
+      expect(postService.getAllPosts).toHaveBeenCalledWith(1, 10);
+      expect(result).toEqual(mockPostsResponse);
+    });
+  });
+
+  describe('getPost', () => {
+    it('should get a single post', async () => {
+      const mockPost: PostDto = {
+        authorId: 0,
+        createdAt: undefined,
+        id: 0,
+        postImg: '',
+        updatedAt: undefined,
+        viewCount: 0,
+        content: 'test content',
+        title: 'test title',
+      };
+
+      jest.spyOn(postService, 'getPostAndIncrementView').mockResolvedValue(mockPost);
+
+      const result = await postController.getPost(1);
+
+      expect(postService.getPostAndIncrementView).toHaveBeenCalledWith(1);
+      expect(result).toEqual(mockPost);
+    });
+  });
+
+  describe('updatePost', () => {
+    it('should update a post', async () => {
+      const mockRequest: RequestWithUser = { user: { id: 1 } } as any;
+      const mockPostContent: PostContentDto = {
+        title: 'update content',
+        content: 'update content',
+      };
+      const mockPost: PostDto = {
+        authorId: 1,
+        createdAt: undefined,
+        id: 1,
+        postImg: '',
+        updatedAt: undefined,
+        viewCount: 0,
+        content: 'update content',
+        title: 'update content',
+      };
+
+      jest.spyOn(postService, 'updatePost').mockResolvedValue(mockPost);
+
+      const result = await postController.updatePost(mockRequest, 1, mockPostContent);
+
+      expect(postService.updatePost).toHaveBeenCalledWith(1, 1, mockPostContent);
+      expect(result).toEqual(mockPost);
+    });
+  });
+
+  describe('deletePost', () => {
+    it('should delete a post', async () => {
+      const mockRequest: RequestWithUser = { user: { id: 1 } } as any;
+
+      jest.spyOn(postService, 'deletePost').mockResolvedValue(undefined);
+
+      const result = await postController.deletePost(mockRequest, 1);
+
+      expect(postService.deletePost).toHaveBeenCalledWith(1, 1);
+      expect(result).toBeUndefined();
+    });
+  });
 });

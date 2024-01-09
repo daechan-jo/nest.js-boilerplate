@@ -44,16 +44,6 @@ export class PostDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  likeCount: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsObject()
-  _count?: object;
-
-  @ApiProperty()
-  @IsOptional()
   @IsObject()
   comments?: { nickname: string; content: string }[];
 }

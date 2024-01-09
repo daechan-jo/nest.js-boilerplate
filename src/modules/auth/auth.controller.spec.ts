@@ -36,20 +36,17 @@ describe('AuthController', () => {
   describe('createUser', () => {
     it('should create a user and return the created user', async () => {
       const joinData: JoinDataDto = {
-        /* mock 데이터 입력 */
         username: 'test',
         password: '1234',
         passwordConfirm: '1234',
         email: 'test@test.com',
       };
       const createdUser: CreatedUserDto = {
-        /* mock 데이터 입력 */
         username: 'test',
         password: '1234',
         email: 'test@test.com',
       };
 
-      // 해당 메서드가 호출될 대 반환시킬 값을 지정
       jest.spyOn(authService, 'isValidPassword').mockReturnValue(true);
       jest.spyOn(authService, 'createUser').mockResolvedValue(createdUser);
 
@@ -64,7 +61,6 @@ describe('AuthController', () => {
 
     it('should throw HttpException when passwords do not match', async () => {
       const joinData: JoinDataDto = {
-        /* mock 데이터 입력 */
         username: 'test',
         password: '1234',
         passwordConfirm: '1234',
