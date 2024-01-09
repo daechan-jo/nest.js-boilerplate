@@ -11,7 +11,7 @@ import { Post } from '../../entities/Post';
 import { AuthService } from '../auth/auth.service';
 
 describe('UserController', () => {
-  let controller: UserController;
+  let userController: UserController;
   let userService: UserService;
 
   beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('UserController', () => {
       providers: [UserService, JwtStrategy, AuthService],
     }).compile();
 
-    controller = module.get<UserController>(UserController);
+    userController = module.get<UserController>(UserController);
     userService = module.get<UserService>(UserService);
   });
 
@@ -49,7 +49,7 @@ describe('UserController', () => {
 
       jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
 
-      const result = await controller.getMyInfo(mockReq);
+      const result = await userController.getMyInfo(mockReq);
 
       expect(userService.findUserById).toHaveBeenCalledWith(mockUser.id);
       expect(result).toEqual(mockUser);
@@ -69,7 +69,7 @@ describe('UserController', () => {
 
       jest.spyOn(userService, 'findUserById').mockResolvedValue(mockUser);
 
-      const result = await controller.getUser(1);
+      const result = await userController.getUser(1);
 
       expect(userService.findUserById).toHaveBeenCalledWith(1);
       expect(result).toEqual(mockUser);
@@ -95,7 +95,7 @@ describe('UserController', () => {
 
       jest.spyOn(userService, 'getUsers').mockResolvedValue(mockUserList);
 
-      const result = await controller.getAllUsers(1, 10);
+      const result = await userController.getAllUsers(1, 10);
 
       expect(userService.getUsers).toHaveBeenCalledWith(1, 10);
       expect(result).toEqual(mockUserList);
@@ -129,7 +129,7 @@ describe('UserController', () => {
       };
       jest.spyOn(userService, 'updateUser').mockResolvedValue(mockUser);
 
-      const result = await controller.editUser(mockReq, mockUpdateData);
+      const result = await userController.editUser(mockReq, mockUpdateData);
 
       expect(userService.updateUser).toHaveBeenCalledWith(mockUser.id, mockUpdateData);
       expect(result).toEqual(mockUser);
@@ -155,7 +155,7 @@ describe('UserController', () => {
       } as any;
       jest.spyOn(userService, 'deleteUser').mockResolvedValue(undefined);
 
-      const result = await controller.deleteUser(mockReq);
+      const result = await userController.deleteUser(mockReq);
 
       expect(userService.deleteUser).toHaveBeenCalledWith(mockUser.id);
       expect(result).toEqual(undefined);

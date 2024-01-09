@@ -9,7 +9,7 @@ import { NotFoundException } from '@nestjs/common';
 import { JoinDataDto } from './dto/joinData.dto';
 
 describe('AuthService', () => {
-  let service: AuthService;
+  let authService: AuthService;
   let jwtService: JwtService;
   let userRepository: Repository<User>;
 
@@ -33,7 +33,7 @@ describe('AuthService', () => {
       ],
     }).compile();
 
-    service = module.get<AuthService>(AuthService);
+    authService = module.get<AuthService>(AuthService);
     jwtService = module.get<JwtService>(JwtService);
     userRepository = module.get(getRepositoryToken(User));
   });
@@ -44,13 +44,13 @@ describe('AuthService', () => {
       testUser.email = 'test@test.com';
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(testUser);
 
-      const foundUser = await service.getUserByEmail('test@test.com');
+      const foundUser = await authService.getUserByEmail('test@test.com');
       expect(foundUser).toEqual(testUser);
     });
 
     it('should throw an error if no user is found', async () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
-      await expect(service.getUserByEmail('test@test.com')).rejects.toThrow(NotFoundException);
+      await expect(authService.getUserByEmail('test@test.com')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -62,8 +62,8 @@ describe('AuthService', () => {
         username: 'test',
         email: 'test@test',
       };
-      jest.spyOn(service, 'isValidPassword').mockReturnValue(true);
-      expect(service.isValidPassword(joinData)).toBe(true);
+      jest.spyOn(authService, 'isValidPassword').mockReturnValue(true);
+      expect(authService.isValidPassword(joinData)).toBe(true);
     });
   });
 
@@ -80,7 +80,7 @@ describe('AuthService', () => {
         user.password = hashedPassword;
         return user;
       });
-      const createdUser = await service.createUser(testUser);
+      const createdUser = await authService.createUser(testUser);
 
       expect(createdUser.email).toEqual(testUser.email);
       expect(createdUser.username).toEqual(testUser.username);
@@ -92,26 +92,26 @@ describe('AuthService', () => {
       const user: User = new User();
       user.email = 'test';
 
-      jest.spyOn(service, 'getUserByEmail').mockResolvedValue(user);
-      const foundUser = await service.validatePayload('test');
+      jest.spyOn(authService, 'getUserByEmail').mockResolvedValue(user);
+      const foundUser = await authService.validatePayload('test');
       expect(foundUser).toEqual(user);
     });
     it('should return null if no user is found', async () => {
-      jest.spyOn(service, 'getUserByEmail').mockResolvedValue(null);
-      const foundUser = await service.validatePayload('test');
+      jest.spyOn(authService, 'getUserByEmail').mockResolvedValue(null);
+      const foundUser = await authService.validatePayload('test');
       expect(foundUser).toBeNull();
     });
 
     it('should return a user if the payload is valid', async () => {
       const user: User = new User();
       user.email = 'test';
-      jest.spyOn(service, 'getUserByEmail').mockResolvedValue(user);
-      const foundUser = await service.validatePayload('test');
+      jest.spyOn(authService, 'getUserByEmail').mockResolvedValue(user);
+      const foundUser = await authService.validatePayload('test');
       expect(foundUser).toEqual(user);
     });
     it('should return null if the payload is invalid', async () => {
-      jest.spyOn(service, 'getUserByEmail').mockResolvedValue(null);
-      const foundUser = await service.validatePayload('test');
+      jest.spyOn(authService, 'getUserByEmail').mockResolvedValue(null);
+      const foundUser = await authService.validatePayload('test');
       expect(foundUser).toBeNull();
     });
   });
@@ -130,7 +130,7 @@ describe('AuthService', () => {
         nickname: testUser.nickname,
       };
       jest.spyOn(jwtService, 'sign').mockImplementation(() => 'testToken');
-      const result = await service.login(testUser);
+      const result = await authService.login(testUser);
 
       expect(jwtService.sign).toHaveBeenCalledWith(expectedPayload);
       expect(result).toHaveProperty('token', 'testToken');

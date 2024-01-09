@@ -21,18 +21,6 @@ export class UserService {
     private postRepository: Repository<Post>,
   ) {}
 
-  async updateUser(userId: number, updateData: UpdateUserDto): Promise<UserDto> {
-    const updateResult = await this.userRepository.update(userId, updateData);
-
-    if (updateResult.affected === 0) {
-      throw new NotFoundException('User not found');
-    }
-
-    const updatedUser = await this.userRepository.findOne({ where: { id: userId } });
-
-    return plainToInstance(UserDto, updatedUser);
-  }
-
   async findUserById(userId: number): Promise<UserDto> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
@@ -51,6 +39,18 @@ export class UserService {
     const totalPage: number = Math.ceil(totalCount / limit);
 
     return { users: plainToInstance(UserListDto, users), totalPage, currentPage: page };
+  }
+
+  async updateUser(userId: number, updateData: UpdateUserDto): Promise<UserDto> {
+    const updateResult = await this.userRepository.update(userId, updateData);
+
+    if (updateResult.affected === 0) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updatedUser = await this.userRepository.findOne({ where: { id: userId } });
+
+    return plainToInstance(UserDto, updatedUser);
   }
 
   async deleteUser(userId: number): Promise<void> {
