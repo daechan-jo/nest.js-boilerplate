@@ -33,6 +33,7 @@ describe('PostController', () => {
         title: 'test title',
       };
       const mockPost: PostDto = {
+        comment: [],
         authorId: 0,
         createdAt: undefined,
         id: 0,
@@ -54,7 +55,7 @@ describe('PostController', () => {
 
   describe('getPosts', () => {
     it('should get a list of posts', async () => {
-      const mockRequest: RequestWithUser = { user: { id: 1 } } as any;
+      // const mockRequest: RequestWithUser = { user: { id: 1 } } as any;
       const mockPostsResponse = {
         posts: [
           {
@@ -66,6 +67,7 @@ describe('PostController', () => {
             viewCount: 0,
             content: 'test content',
             title: 'test title',
+            comment: [],
           },
           {
             authorId: 1,
@@ -76,6 +78,7 @@ describe('PostController', () => {
             viewCount: 0,
             content: 'test content',
             title: 'test title',
+            comment: [],
           },
         ],
         totalPage: 2,
@@ -102,6 +105,7 @@ describe('PostController', () => {
         viewCount: 0,
         content: 'test content',
         title: 'test title',
+        comment: [],
       };
 
       jest.spyOn(postService, 'getPostAndIncrementView').mockResolvedValue(mockPost);
@@ -129,6 +133,7 @@ describe('PostController', () => {
         viewCount: 0,
         content: 'update content',
         title: 'update content',
+        comment: [],
       };
 
       jest.spyOn(postService, 'updatePost').mockResolvedValue(mockPost);

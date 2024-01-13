@@ -8,7 +8,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../../entities/User';
 import { LocalStrategy } from '../../passport/local.strategy';
-import { Post } from '../../entities/Post';
 import { typeOrmConfig } from '../../../typeorm.config';
 
 describe('AuthController', () => {

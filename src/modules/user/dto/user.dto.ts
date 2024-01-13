@@ -40,7 +40,7 @@ export class UserDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  @Exclude()
+  // @Exclude()
   password: string;
 
   @ApiProperty()

@@ -39,7 +39,7 @@ export class Post {
   @Column({ nullable: true })
   postImg: string;
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, { eager: true })
   comment: Comment[];
 
   @ManyToOne(() => User, (user) => user.post, { onDelete: 'CASCADE' })

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+import { Comment } from '../../../entities/Comment';
 
 export class PostDto {
   @ApiProperty()
@@ -45,5 +46,5 @@ export class PostDto {
   @ApiProperty()
   @IsOptional()
   @IsObject()
-  comments?: { nickname: string; content: string }[];
+  comment: Comment[];
 }

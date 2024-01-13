@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
+import { classToPlain, instanceToPlain, plainToClass, plainToInstance } from 'class-transformer';
 import { PostDto } from './dto/post.dto';
 import { deleteRelativeImage } from '../../utils/deleteRelativeImage';
 import { Post } from '../../entities/Post';
@@ -20,8 +20,8 @@ export class PostService {
 
   async createPost(userId: number, postContent: PostContentDto): Promise<PostDto> {
     const post: Post = this.postRepository.create({
-      ...postContent,
       authorId: userId,
+      ...postContent,
     });
 
     const createdPost: Post = await this.postRepository.save(post);
@@ -45,28 +45,34 @@ export class PostService {
     return { posts: plainToInstance(PostDto, posts), totalPage, currentPage: page };
   }
 
-  async getPostAndIncrementView(postId: number): Promise<PostDto> {
-    let post = await this.postRepository.findOne({
+  async incrementViewCount(postId: number): Promise<void> {
+    await this.postRepository.increment({ id: postId }, 'viewCount', 1);
+  }
+
+  async getPost(postId: number): Promise<PostDto> {
+    const post: Post = await this.postRepository.findOne({
       where: { id: postId },
-      relations: ['comment', 'comment.author'],
-    });
-    if (!post) throw new NotFoundException('The post cannot be found.');
-
-    post.viewCount += 1;
-    post = await this.postRepository.save(post);
-
-    const commentList = await this.commentRepository.find({
-      where: { postId: postId },
-      relations: ['author'],
     });
 
-    const postDto: PostDto = plainToInstance(PostDto, post);
+    if (!post) {
+      throw new NotFoundException('The post cannot be found.');
+    }
 
-    postDto.comments = commentList.map((comment) => ({
-      content: comment.content,
-      nickname: comment.author.nickname,
-    }));
-    return postDto;
+    return plainToInstance(PostDto, post);
+  }
+
+  async getPostAndIncrementView(postId: number): Promise<PostDto> {
+    await this.incrementViewCount(postId);
+
+    const post: Post = await this.postRepository.findOne({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      throw new NotFoundException('The post cannot be found.');
+    }
+
+    return plainToInstance(PostDto, post);
   }
 
   async updatePost(
