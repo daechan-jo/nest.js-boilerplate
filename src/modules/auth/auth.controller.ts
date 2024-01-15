@@ -27,7 +27,7 @@ export class AuthController {
 
   @Post()
   @ApiOperation({
-    summary: '회원가입',
+    summary: 'join the membership',
   })
   @ApiBody({ type: JoinDataDto })
   @ApiResponse({ status: 201, type: CreatedUserDto })
@@ -43,8 +43,8 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({
-    summary: '로그인',
-    description: '성공시 JWT 발급',
+    summary: 'login',
+    description: 'JWT issued upon successful login',
   })
   @ApiBody({ type: LoginDataDto })
   @ApiResponse({ status: 201, type: LoginUserDto })

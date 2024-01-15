@@ -31,7 +31,7 @@ export class PostController {
 
   @Post()
   @ApiOperation({
-    summary: '게시글 작성',
+    summary: 'write a post',
   })
   @ApiBody({
     type: PostContentDto,
@@ -49,7 +49,7 @@ export class PostController {
 
   @Get('/list')
   @ApiOperation({
-    summary: '게시글 리스트',
+    summary: 'return all posts',
   })
   @ApiResponse({ status: 200, type: [PostDto] })
   @UseGuards(AuthGuard('jwt'))
@@ -62,7 +62,7 @@ export class PostController {
 
   @Get(':postId')
   @ApiOperation({
-    summary: '단일 게시글 상세 조회',
+    summary: 'return a post',
   })
   @ApiResponse({ status: 200, type: PostDto })
   @UseGuards(AuthGuard('jwt'))
@@ -72,8 +72,8 @@ export class PostController {
 
   @Put(':postId')
   @ApiOperation({
-    summary: '단일 게시글 수정',
-    description: '요청받은 필드 수정',
+    summary: 'edit single post',
+    description: 'modify requested fields',
   })
   @ApiBody({ type: PostContentDto })
   @ApiResponse({ status: 201, type: PostDto })
@@ -89,11 +89,8 @@ export class PostController {
 
   @Delete(':postId')
   @ApiOperation({
-    summary: '게시글 삭제',
-    description: '게시글에 포함된 댓글, 이미지 파일 삭제',
-  })
-  @ApiBody({
-    description: '게시글 삭제',
+    summary: 'delete single post',
+    description: 'delete a post and image',
   })
   @ApiResponse({ status: 204, description: 'Successfully deleted post' })
   @UseGuards(AuthGuard('jwt'))

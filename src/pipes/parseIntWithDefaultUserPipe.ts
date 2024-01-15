@@ -2,6 +2,7 @@ import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from
 
 @Injectable()
 export class ParseIntWithDefaultUserPipe implements PipeTransform {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   transform(value: any, metadata: ArgumentMetadata): number {
     if (value === undefined || value === null || value === '') {
       return 0;

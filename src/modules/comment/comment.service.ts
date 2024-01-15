@@ -1,4 +1,4 @@
-import { CommentContentDto } from './dto/commentContent.dto';
+import { CommentContentDataDto } from './dto/commentContentData.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { CommentDto } from './dto/comment.dto';
@@ -21,7 +21,7 @@ export class CommentService {
     userId: number,
     postId: number,
     parentId: number,
-    createCommentDto: CommentContentDto,
+    createCommentDto: CommentContentDataDto,
   ): Promise<CommentDto> {
     const user: User = await this.userRepository.findOne({ where: { id: userId } });
     const newComment = await this.commentRepository.save({
@@ -37,7 +37,7 @@ export class CommentService {
   async updateComment(
     userId: number,
     commentId: number,
-    updateCommentDto: CommentContentDto,
+    updateCommentDto: CommentContentDataDto,
   ): Promise<CommentDto> {
     await this.commentRepository.update(
       { id: commentId, authorId: userId },

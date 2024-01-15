@@ -18,7 +18,7 @@ import {
 import { CommentService } from './comment.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RequestWithUser } from '../../interfaces/requestWithUser';
-import { CommentContentDto } from './dto/commentContent.dto';
+import { CommentContentDataDto } from './dto/commentContentData.dto';
 import { CommentDto } from './dto/comment.dto';
 import { OptionalIntPipe } from '../../pipes/optionalIntPipe';
 import { LoggingInterceptor } from '../../interceptors/logging.interceptor';
@@ -31,45 +31,45 @@ export class CommentController {
 
   @Post()
   @ApiOperation({
-    summary: '댓글 작성',
-    description: '댓글 작성 또는 대댓글 작성',
+    summary: 'write a comment',
+    description: 'write a comment or reply to a reply',
   })
-  @ApiBody({ type: CommentContentDto })
+  @ApiBody({ type: CommentContentDataDto })
   @ApiResponse({ status: 201, type: CommentDto })
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard('jwt'))
   async createComment(
     @Request() req: RequestWithUser,
-    @Body() createCommentDto: CommentContentDto,
+    @Body() commentContentData: CommentContentDataDto,
     @Query('postId', ParseIntPipe) postId: number,
     @Optional() @Query('parentId', OptionalIntPipe) parentId?: number,
   ): Promise<CommentDto> {
     const userId: number = Number(req.user.id);
-    return await this.commentService.createComment(userId, postId, parentId, createCommentDto);
+    return await this.commentService.createComment(userId, postId, parentId, commentContentData);
   }
 
   @Put(':commentId')
   @ApiOperation({
-    summary: '댓글 수정',
-    description: '댓글 작성 또는 대댓글 수정',
+    summary: 'edit comment',
+    description: 'write a comment or edit a reply',
   })
-  @ApiBody({ type: CommentContentDto })
+  @ApiBody({ type: CommentContentDataDto })
   @ApiResponse({ status: 201, type: CommentDto })
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard('jwt'))
   async updateComment(
     @Request() req: RequestWithUser,
-    @Body() updateCommentDto: CommentContentDto,
+    @Body() updateCommentData: CommentContentDataDto,
     @Param('commentId', ParseIntPipe) commentId: number,
   ): Promise<CommentDto> {
     const userId: number = Number(req.user.id);
-    return await this.commentService.updateComment(userId, commentId, updateCommentDto);
+    return await this.commentService.updateComment(userId, commentId, updateCommentData);
   }
 
   @Delete(':commentId')
   @ApiOperation({
-    summary: '댓글 삭제',
-    description: '댓글 + 하위 댓글 삭제',
+    summary: 'delete comment',
+    description: 'delete a comment or reply',
   })
   @ApiResponse({ status: 204, description: 'Successfully deleted comment' })
   @UseGuards(AuthGuard('jwt'))

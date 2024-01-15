@@ -31,7 +31,7 @@ export class UserController {
 
   @Get('/my')
   @ApiOperation({
-    summary: '내 정보 조회',
+    summary: 'login user info',
   })
   @ApiResponse({ status: 200, type: UserDto })
   @UseGuards(AuthGuard('jwt'))
@@ -42,8 +42,8 @@ export class UserController {
 
   @Get('/:id')
   @ApiOperation({
-    summary: '단일 유저 상세 조회',
-    description: 'id와 일치 하는 유저 조회',
+    summary: 'single user info',
+    description: 'user lookup matching id',
   })
   @ApiResponse({ status: 200, type: UserDto })
   @UseGuards(AuthGuard('jwt'))
@@ -55,7 +55,7 @@ export class UserController {
 
   @Get('/all')
   @ApiOperation({
-    summary: '모든 유저 리스트',
+    summary: 'all user info',
   })
   @ApiResponse({ status: 200, type: UserListResponseDto })
   @UseGuards(AuthGuard('jwt'))
@@ -68,8 +68,8 @@ export class UserController {
 
   @Put()
   @ApiOperation({
-    summary: '회원 정보 수정',
-    description: '요청 받은 필드 수정',
+    summary: 'edit user info',
+    description: 'edit requested user fields',
   })
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, type: UserDto })
@@ -85,10 +85,9 @@ export class UserController {
 
   @Delete()
   @ApiOperation({
-    summary: '회원탈퇴',
-    description: '프로필,백그라운드 이미지 + 관련 게시글, 댓글 삭제',
+    summary: 'delete user',
+    description: 'delete user and related records',
   })
-  @ApiBody({ description: '유저 + 관련 레코드 삭제' })
   @ApiResponse({ status: 204, description: 'User successfully deleted.' })
   @UseGuards(AuthGuard('jwt'))
   async deleteUser(@Request() req: RequestWithUser): Promise<void> {
